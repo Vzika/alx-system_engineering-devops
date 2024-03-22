@@ -1,11 +1,7 @@
-# install flask from pip3
+# a manifest that kills a process named killmenow.
 
-package {  'flask':
-  ensure   => '2.1.0',
-  provider => 'pip3',
-}
-
-package {  'werkzeug':
-  ensure   => '2.1.1',
-  provider => 'pip3',
+exec {  'killmenow':
+  command => 'pkill -f killmenow',
+  path    => ['/bin:/usr/bin'],
+  onlyif  => 'pgrep -f killmenow',
 }
