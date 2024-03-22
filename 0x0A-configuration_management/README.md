@@ -33,3 +33,20 @@ file { 'resource title':
   validate_replacement    => # The replacement string in a `validate_cmd` that...
   # ...plus any applicable metaparameters.
 }
+
+
+how to install puppet
+1. lsb_release -a (to check the version of ur ubuntu
+2. wget https://apt.puppetlabs.com/puppet7-release-focal.deb
+Replace focal with your Ubuntu version codename if you're using a different version. eg  wget https://apt.puppetlabs.com/puppet7-release-jammy.deb
+
+3. sudo dpkg -i puppet7-release-jammy.deb
+sudo apt-get update
+
+4.sudo apt-get install puppet-agent
+
+sudo apt-get remove puppet-agent
+sudo apt-get -f install
+sudo apt-get install puppet
+pip install --upgrade flask werkzeug
+
