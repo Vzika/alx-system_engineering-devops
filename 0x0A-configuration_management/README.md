@@ -1,3 +1,37 @@
+Puppet is an open-source configuration management tool that enables system administrators to automate the deployment and management of IT infrastructure. It allows users to define the desired state of their systems using code, then automatically enforces and maintains that state across multiple servers and environments.
+
+With Puppet, administrators can describe the configuration settings of their servers, including packages to install, files to manage, services to run, and more, using a declarative language called Puppet DSL (Domain Specific Language). Puppet DSL allows users to specify the desired configuration state without having to write procedural scripts.
+
+Key features of Puppet include:
+
+Declarative Configuration: Puppet enables administrators to declare the desired configuration state of their infrastructure, rather than specifying step-by-step instructions for how to achieve that state.
+
+Agent-Server Architecture: Puppet operates on a client-server model. The Puppet server, known as the Puppet Master, manages the configuration manifests and distributes them to Puppet agents running on managed nodes.
+
+Resource Abstraction: Puppet abstracts system resources into manageable units called resources. Resources represent elements of system configuration such as files, packages, services, users, and groups.
+
+Idempotent Enforcement: Puppet ensures that configurations are applied consistently and idempotently, meaning that applying the same configuration multiple times results in the same end state. If a system deviates from its desired state, Puppet automatically corrects it.
+
+Modular Design: Puppet configurations are organized into reusable modules, which encapsulate configuration logic and promote code reuse and maintainability.
+
+Extensibility: Puppet is highly extensible and supports integration with various tools and services, allowing users to incorporate Puppet into their existing infrastructure and workflows.
+
+Overall, Puppet helps organizations automate the management of their infrastructure, improve consistency, reduce manual errors, and accelerate deployment processes. It is widely used in DevOps practices, cloud environments, and large-scale IT operations.
+
+
+Benefits of Configuration Management for Servers:
+
+Quick Provisioning of New Servers: Configuration management tools automate the provisioning process, making it much quicker and more efficient than manual deployment. Tasks that could take hours manually can be completed in minutes with automation.
+
+Quick Recovery from Critical Events: Automated provisioning allows for quick recovery from server outages or critical events. When a server goes offline unexpectedly, a replacement can be deployed rapidly to restore services while the issue is investigated.
+
+No More Snowflake Servers: Manual system administration often leads to servers becoming unique and hard to manage due to manual tweaks and updates. Configuration management ensures consistency by documenting all server setups in provisioning scripts, preventing servers from becoming "snowflakes".
+
+Version Control for the Server Environment: Server setups can be treated like software code, allowing for version control with tools like Git. This enables tracking of changes, implementation of code review policies, and maintenance of separate branches for different versions of provisioning scripts.
+
+Replicated Environments: Configuration management facilitates the replication of server environments with identical software and configurations. This allows for the creation of consistent multistage ecosystems, including production, development, and testing environments. It also minimizes problems caused by environment discrepancies when deploying applications or sharing setups between team members.
+
+
 file { 'resource title':
   path                    => # (namevar) The path to the file to manage.  Must be fully...
   ensure                  => # Whether the file should exist, and if so what...
@@ -34,6 +68,57 @@ file { 'resource title':
   # ...plus any applicable metaparameters.
 }
 
+# creates a file in /tmp
+
+file { '/tmp/school':
+  content =>'I love Puppet',
+  path    => '/tmp/school',
+  mode    => '0744',
+  owner   => 'www-data',
+  group   => 'www-data',
+}
+
+exec { 'resource title':
+  command     => # (namevar) The actual command to execute.  Must either be...
+  creates     => # A file to look for before running the command...
+  cwd         => # The directory from which to run the command.  If 
+  environment => # An array of any additional environment variables 
+  group       => # The group to run the command as.  This seems to...
+  logoutput   => # Whether to log command output in addition to...
+  onlyif      => # A test command that checks the state of the...
+  path        => # The search path used for command execution...
+  provider    => # The specific backend to use for this `exec...
+  refresh     => # An alternate command to run when the `exec...
+  refreshonly => # The command should only be run as a refresh...
+  returns     => # The expected exit code(s).  An error will be...
+  timeout     => # The maximum time the command should take.  If...
+  tries       => # The number of times execution of the command...
+  try_sleep   => # The time to sleep in seconds between...
+  umask       => # Sets the umask to be used while executing this...
+  unless      => # A test command that checks the state of the...
+  user        => # The user to run the command as.  Note that if...
+  # ...plus any applicable metaparameters.
+}
+
+# a manifest that kills a process named killmenow.
+
+exec {  'killmenow':
+  command => 'pkill -f killmenow',
+  path    => ['/bin:/usr/bin'],
+  onlyif  => 'pgrep -f killmenow',
+}
+
+
+#install flask from pip3
+package {  'flask':
+  ensure   => '2.1.0',
+  provider => 'pip3',
+}
+
+package {  'werkzeug':
+  ensure   => '2.1.1',
+  provider => 'pip3',
+}
 
 how to install puppet
 1. lsb_release -a (to check the version of ur ubuntu
