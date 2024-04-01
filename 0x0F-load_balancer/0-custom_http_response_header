@@ -25,7 +25,7 @@ index index.html;
 server_name _;
 add_header X-Served-By \$HOSTNAME;
 location / {
-	rewrite ^/redirect_me https://www.github.com/iAdamo permanent;
+	rewrite ^/redirect_me https://www.github.com/Vzika permanent;
 	error_page 404 /404.html;
         try_files \$uri \$uri/ =404;
 }
