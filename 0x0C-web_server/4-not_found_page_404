@@ -3,44 +3,41 @@
 # Nginx should be listening on port 80
 # When querying Nginx at its root / with a GET request (requesting a page) using curl,
 # it must return a page that contains the string Hello World!
-#You can’t use systemctl for restarting nginx
-#scp -i ~/.ssh/school 1-install_nginx_web_server ubuntu@34.227.94.88
+# The redirection must be a “301 Moved Permanently”
 
-sudo apt -y update
-sudo apt install -y nginx
+if ! nginx -v; then
+	sudo apt -y update
+	sudo apt install -y nginx
+fi
 
-# starting nginx service
-sudo service nginx start
+sudo touch /var/www/html/index.html /var/www/html/404.html
+sudo chown -R "$USER":"$USER" /var/www/html/index.html /var/www/html/404.html
+echo "Hello World!" > /var/www/html/index.html
+echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-# allowing nginx on firewall
-sudo ufw allow 'Nginx HTTP'
-
-# Give the user ownership to website files for easy editing
-sudo chown -R "$USER":"$USER" /var/www/html
-sudo chmod -R 755 /var/www
-
-# Create or overwrite the content of /etc/nginx/sites-available/default
-#tee is a command-line utility that reads from standard input and writes to 
-#standard output and files simultaneously.
-#> /dev/null is used to discard the output of the tee command.
-
-echo 'server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root /var/www/html;
-    index index.html;
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}' | sudo tee /etc/nginx/sites-available/default > /dev/null
+if  [ ! -e "default_backup" ]; then
+	sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default_backup
+fi
+cat > /etc/nginx/sites-available/default << _EOL_
+server {
+listen 80 default_server;
+listen [::]:80 default_server;
+root /var/www/html;
+index index.html;
+location / {
+        try_files \$uri \$uri/ =404;
+}
+}
+_EOL_
 
 new_string="\\\trewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;"
 sudo sed -i "7i $new_string" /etc/nginx/sites-available/default
 
-# Set up a 404 page
-echo "Ceci n'est pas une page" >> /var/www/html/error_404.html
-sudo sed -i '25i\	error_page 404 /error_404.html;' /etc/nginx/sites-available/default
+new_string="\\\terror_page 404 /404.html;"
+sudo sed -i "9i $new_string" /etc/nginx/sites-available/default
 
+if [ ! -e "/etc/nginx/sites-enabled/default" ]; then
+        sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+fi
 
-# Restarting nginx
 sudo service nginx restart
