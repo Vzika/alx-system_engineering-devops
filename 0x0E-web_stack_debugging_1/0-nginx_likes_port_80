@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Install required diagnostic tools (if not already installed)
+apt-get update
+apt-get install -y net-tools nginx
+
+# Check if Nginx is listening on port 80
+if ! netstat -tuln | grep ':80 '; then
+    # Modify Nginx configuration to listen on port 80
+    sed -i 's/listen\s*80;/listen 80 default_server;/g' /etc/nginx/nginx.conf
+
+    # Restart Nginx to apply changes
+    service nginx restart
+fi
+
+echo "Nginx is now listening on port 80."
+
