@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# Function to display usage information
+usage() {
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+}
+
+# Check if domain argument is provided
+if [ $# -lt 1 ]; then
+    usage
+fi
+
+# Assign command-line arguments to variables
+domain=$1
+subdomain=$2
+
+# Define array of subdomains to audit
+subdomains=("www" "lb-01" "web-01" "web-02")
+
+# Function to perform DNS query for a subdomain
+query_subdomain() {
+    local subdomain=$1
+    # Perform DNS query and process output
+    result=$(dig +short "$subdomain.$domain")
+    if [ -n "$result" ]; then
+        echo "The subdomain $subdomain is a $(dig +short -t CNAME "$subdomain.$domain" | awk '{print $1}') record and points to $result"
+    fi
+}
+
+# Main function to audit subdomains
+audit_subdomains() {
+    # If subdomain argument is provided, query specific subdomain
+    if [ -n "$subdomain" ]; then
+        query_subdomain "$subdomain"
+    else
+        # Loop through array of subdomains and query each one
+        for sub in "${subdomains[@]}"; do
+            query_subdomain "$sub"
+        done
+    fi
+}
+
+# Call main function
+audit_subdomains
