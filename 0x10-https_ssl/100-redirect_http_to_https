@@ -37,7 +37,7 @@ frontend http
 
 # Frontend for HTTPS (Port 443)
 frontend https
-        bind *:443 ssl crt /etc/letsencrypt/live/www.enimo.tech/enimo.pem
+        bind *:443 ssl crt /etc/haproxy/certs/www.zikazone.tech.pem
         mode http
         default_backend web-backend
 
