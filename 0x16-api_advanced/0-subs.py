@@ -39,4 +39,3 @@ def number_of_subscribers(subreddit):
         # Handle any exceptions (e.g., network errors) and return 0
         print(f"An error occurred: {e}")
         return 0
-
