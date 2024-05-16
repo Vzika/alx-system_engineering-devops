@@ -1,0 +1,16 @@
+[Unit]
+Description=Gunicorn instance to serve 0-hello_route.py
+After=network.target
+
+[Service]
+User=ubuntu
+Group=www-data
+WorkingDirectory=/home/ubuntu/AirBnB_clone_v2/web_flask/0-hello_route.py
+#Environment="PATH=/home/sammy/myproject/myprojectenv/bin"
+Environment="PATH=/home/ubuntu/AirBnB_clone_v2/web_flask/0-hello_route.py/usr/bin"
+#ExecStart=/home/sammy/myproject/myprojectenv/bin/gunicorn --workers 3 --bind unix:myproject.sock -m 007 wsgi:app
+#Environment="PATH=/usr/bin:/bin:/usr/local/bin"
+ExecStart=/usr/bin/gunicorn --workers 3 --bind unix:/home/ubuntu/AirBnb_clone_v2/web_flask/myproject.sock -m 007 web_flask.0-hello_route:app
+
+[Install]
+WantedBy=multi-user.target
