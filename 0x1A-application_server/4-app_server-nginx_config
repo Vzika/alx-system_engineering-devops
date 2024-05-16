@@ -1,29 +1,30 @@
+# Define a server block to handle HTTP requests on port 80
 server {
+        # Listen for incoming requests on port 80
         listen 80 default_server;
         listen [::]:80 default_server;
+
+        # Specify the server name (domain or IP address)
         server_name 34.227.94.88;
+
+        # Add a custom header to the response indicating the server that handled the request
         add_header X-Served-By $HOSTNAME;
-        location /airbnb-onepage/ {
+
+        # Define a location block for requests to "/airbnb-onepage/"
+        location = /airbnb-onepage/ {
+                # Proxy the request to the Flask application running on http://127.0.0.1:5000/airbnb-onepage
                 proxy_pass http://127.0.0.1:5000/airbnb-onepage;
         }
-        location / {
-                rewrite ^/redirect_me https://www.github.com/Vzika permanent;
-                error_page 404 /404.html;
-                try_files $uri $uri/ =404;
+
+        # Define a location block using a regular expression for requests matching the pattern "/airbnb-dynamic/number_odd_or_even/<digits>"
+        location ~ /airbnb-dynamic/number_odd_or_even/(\d+)$ {
+                # Proxy the request to the Flask application running on http://127.0.0.1:5001/number_or_or_even/<captured_digits>
+                proxy_pass http://127.0.0.1:5001/number_or_or_even/$1;
         }
 
-        location ~ ^/airbnb-dynamic/number_odd_or_even/([0-9]+)$ {
-                        proxy_pass http://0.0.0.0:5001/number_odd_or_even/$1;
-                }
-                if ($request_filename ~ redirect_me){
-                        rewrite ^ https://th3-gr00t.tk/ permanent;
-                }
-                error_page 404 /error_404.html;
-                location = /error_404.html {
-                        internal;
-                }
         location /api {
                 # Proxy the request to the backend server running at http://127.0.0.1:5002/api
                 proxy_pass http://127.0.0.1:5002/api;
         }
 }
+
