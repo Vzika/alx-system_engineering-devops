@@ -1,1 +1,4 @@
 #!/usr/bin/env bash
+# Bull Crap, well damned
+MASTER_PID=$(pgrep gunicorn)
+sudo kill -HUP "$MASTER_PID"
