@@ -5,7 +5,6 @@ PROCESS_NAME="gunicorn"
 
 PID=$(pgrep -f "^${PROCESS_NAME}")
 
-
 if [ -z "$PID" ]; then
     echo "No process found for $PROCESS_NAME"
     exit 1
@@ -13,9 +12,9 @@ fi
 
 kill -HUP "$PID"
 
-if $?; then
-    echo "Gunicorn (PID $PID) reloaded gracefully."
+if [ $? -eq 0 ]; then
+    echo "OK"
 else
-    echo "Failed to reload Gunicorn."
+    echo "NOk"
     exit 1
 fi
