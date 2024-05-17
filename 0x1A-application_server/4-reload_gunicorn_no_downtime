@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
-# Bull Crap, well damned
-MASTER_PID=$(pgrep gunicorn)
-sudo kill -HUP "$MASTER_PID"
+# Reload Gunicorn in a graceful way
+
+PROCESS_NAME="gunicorn"
+
+PID=$(pgrep -f "^${PROCESS_NAME}")
+
+
+if [ -z "$PID" ]; then
+    echo "No process found for $PROCESS_NAME"
+    exit 1
+fi
+
+kill -HUP "$PID"
+
+if $?; then
+    echo "Gunicorn (PID $PID) reloaded gracefully."
+else
+    echo "Failed to reload Gunicorn."
+    exit 1
+fi
